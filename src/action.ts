@@ -291,7 +291,10 @@ export async function GetTopAnime({
   }
 }
 
-const localUrl = 'http://localhost:3000/api';
+const localUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://animax-v2.vercel.app/api'
+    : 'http://localhost:3000/api';
 export async function TelegramLinks({ query }: { query: string }): Promise<GetAnimeResponse> {
   try {
     const res = await fetchWithCache(`${localUrl}/telegram?q=${query}`);
