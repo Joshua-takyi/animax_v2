@@ -29,11 +29,11 @@ const MoviesCard = memo(function MoviesCard({
 }: CardProps) {
   // Use useMemo for expensive computations
   const ratingLabel = useMemo(() => {
-    if (!rating) return 'PG';
+    if (!rating) return 'Not Rated';
     if (rating.includes('R -') || rating.includes('R+')) return '18+';
     if (rating.includes('PG-13')) return '13+';
     if (rating.includes('PG')) return '7+';
-    return 'PG';
+    return 'All Ages';
   }, [rating]);
 
   // Pre-compute date for optimization
@@ -46,14 +46,20 @@ const MoviesCard = memo(function MoviesCard({
   const urlSafeTitle = useMemo(() => encodeURIComponent(title_english || ''), [title_english]);
 
   return (
-    <div className="w-full h-[220px] sm:h-[260px] md:h-[300px] lg:h-[350px] relative overflow-hidden rounded-lg">
+    <div
+      className="w-full h-[220px] sm:h-[260px] md:h-[300px] lg:h-[350px] relative overflow-hidden rounded-lg"
+      itemScope
+      itemType="https://schema.org/Movie"
+    >
       <Link
         href={`/profile/${mal_id}?q=${urlSafeTitle} anime`}
         className="block h-full w-full"
         prefetch={false}
+        title={`View details for ${title_english || 'Untitled Anime'}`}
       >
         <div className="w-full h-full relative group">
-          {/* Rating badge */}
+          {/* Rating badge with structured data */}
+          <meta itemProp="contentRating" content={rating || 'Not Rated'} />
           <Badge
             variant={'destructive'}
             className="absolute top-2 right-2 z-10 px-2 py-1 text-xs rounded-sm"
@@ -61,9 +67,10 @@ const MoviesCard = memo(function MoviesCard({
             {ratingLabel}
           </Badge>
 
-          {/* Type badge */}
+          {/* Type badge with structured data */}
           {type && (
             <div className="absolute top-2 left-2 z-10">
+              <meta itemProp="@type" content={type} />
               <Badge
                 variant="secondary"
                 className="px-2 py-1 text-xs bg-black/50 text-white border-none"
@@ -73,21 +80,23 @@ const MoviesCard = memo(function MoviesCard({
             </div>
           )}
 
-          {/* Episodes count - visible on all screen sizes */}
+          {/* Episodes count with structured data */}
           {episodes && (
             <div className="absolute top-10 left-2 z-10">
+              <meta itemProp="numberOfEpisodes" content={episodes.toString()} />
               <Badge
                 variant="outline"
                 className="px-2 py-1 text-xs bg-black/50 text-white border-none flex items-center gap-1"
               >
                 <PlayCircle size={12} />
-                {episodes}
+                {episodes} Episodes
               </Badge>
             </div>
           )}
 
-          {/* Movie image - optimized loading */}
+          {/* Movie image with structured data */}
           <div className="absolute inset-0 bg-slate-200 dark:bg-slate-800">
+            <meta itemProp="image" content={images} />
             <Image
               src={images}
               alt={title_english || 'Movie image'}
@@ -102,17 +111,21 @@ const MoviesCard = memo(function MoviesCard({
           {/* Dark overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
-          {/* Content - Simplified and static positioning */}
+          {/* Content - Simplified and static positioning with structured data */}
           <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white transform translate-y-0 sm:translate-y-[30%] group-hover:translate-y-0 transition-transform duration-300">
-            {/* Title */}
-            <h2 className="text-sm sm:text-base lg:text-lg font-bold truncate mb-1 sm:mb-2 text-shadow">
+            {/* Title with structured data */}
+            <h2
+              className="text-sm sm:text-base lg:text-lg font-bold truncate mb-1 sm:mb-2 text-shadow"
+              itemProp="name"
+            >
               {title_english || 'Untitled'}
             </h2>
 
-            {/* Info row */}
+            {/* Info row with structured data */}
             <div className="flex items-center justify-between text-xs text-white/90 mb-1 sm:mb-2">
               {score && (
                 <div className="flex items-center gap-1">
+                  <meta itemProp="aggregateRating" content={score.toString()} />
                   <Star size={12} className="text-yellow-400" fill="currentColor" />
                   <span>{score.toFixed(1)}</span>
                 </div>
@@ -120,15 +133,20 @@ const MoviesCard = memo(function MoviesCard({
 
               {formattedDate && (
                 <div className="flex items-center gap-1">
+                  <meta itemProp="datePublished" content={aired?.string || ''} />
                   <Calendar size={12} />
                   <span>{formattedDate}</span>
                 </div>
               )}
             </div>
 
-            {/* View details button - CSS transition instead of Framer Motion */}
+            {/* View details button with ARIA label */}
             <div className="mt-1 sm:mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
-              <div className="bg-primary/80 hover:bg-primary text-white text-center py-1 sm:py-1.5 rounded-sm text-xs sm:text-sm font-medium transition-colors">
+              <div
+                className="bg-primary/80 hover:bg-primary text-white text-center py-1 sm:py-1.5 rounded-sm text-xs sm:text-sm font-medium transition-colors"
+                role="button"
+                aria-label={`View details for ${title_english || 'Untitled Anime'}`}
+              >
                 View Details
               </div>
             </div>
@@ -141,10 +159,5 @@ const MoviesCard = memo(function MoviesCard({
 
 // Add display name for better debugging
 MoviesCard.displayName = 'MoviesCard';
-
-// Define the text-shadow utility in global.css
-// .text-shadow {
-//   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-// }
 
 export default MoviesCard;

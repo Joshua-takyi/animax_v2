@@ -1,0 +1,39 @@
+{
+  "name": "Animax - Anime Discovery Platform",
+  "short_name": "Animax",
+  "description": "Discover and explore anime series, movies, and shows with personalized recommendations.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1b1e",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Search Anime",
+      "short_name": "Search",
+      "description": "Search for anime titles",
+      "url": "/search",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Movies",
+      "short_name": "Movies",
+      "description": "Browse anime movies",
+      "url": "/movies",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

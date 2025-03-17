@@ -14,21 +14,28 @@ export default function MovieHeader({
   duration,
 }: Readonly<MovieHeaderProps>) {
   return (
-    <div className="py-4 w-full overflow-x-hidden">
-      <div className="flex flex-col">
-        {/* Title section */}
-        <h1 className="text-2xl md:text-4xl font-bold mb-1">{title}</h1>
-        <div className="text-sm mb-1">Original title: {originalTitle}</div>
+    <header className="py-4 w-full overflow-x-hidden">
+      <div className="flex flex-col" itemScope itemType="https://schema.org/Movie">
+        {/* Title section with structured data */}
+        <h1 className="text-2xl md:text-4xl font-bold mb-1" itemProp="name">
+          {title}
+        </h1>
+        <div className="text-sm mb-1">
+          Original title: <span itemProp="alternateName">{originalTitle}</span>
+        </div>
 
-        {/* Movie details */}
-        <div className="flex  items-center gap-2 text-sm mb-4 flex-wrap">
+        {/* Movie details with structured data */}
+        <div className="flex items-center gap-2 text-sm mb-4 flex-wrap">
+          <meta itemProp="datePublished" content={year} />
           <span>{year}</span>
-          <span>•</span>
+          <span aria-hidden="true">•</span>
+          <meta itemProp="contentRating" content={rating} />
           <span>{rating}</span>
-          <span>•</span>
+          <span aria-hidden="true">•</span>
+          <meta itemProp="duration" content={`PT${duration}`} />
           <span>{duration}</span>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
