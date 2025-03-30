@@ -61,7 +61,7 @@ export default function SearchInput({
           ref={inputRef}
           type="text"
           name="search"
-          className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors dark:text-white dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400"
+          className="w-full px-3 sm:px-4 py-2 text-[16px] border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-colors dark:text-white dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400"
           placeholder={placeholder}
           onChange={(e) => setSearch(e.target.value)}
           value={search}

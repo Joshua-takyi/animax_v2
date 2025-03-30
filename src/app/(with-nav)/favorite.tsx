@@ -26,8 +26,10 @@ export default function Favorite() {
   const uniqueData = data ? removeDuplicates(data, 'mal_id') : [];
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="md:text-[1.3rem] font-bold capitalize">Most Favorite</h1>
-      <ListComponent data={uniqueData} />
+      <div className="flex flex-col gap-4">
+        <h1 className="md:text-[1.3rem] font-bold capitalize">Most Favorite</h1>
+        <ListComponent data={uniqueData} />
+      </div>
     </div>
   );
 }

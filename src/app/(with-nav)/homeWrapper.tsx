@@ -1,7 +1,10 @@
 import React from 'react';
-
-const HomeWrapper = ({ children }: { children: React.ReactNode }) => {
-  return <div className=" w-full px-4 md:px-6  ">{children}</div>;
+interface HomeWrapperProps {
+  children: React.ReactNode;
+  className?: string;
+}
+const HomeWrapper = ({ children, className }: Readonly<HomeWrapperProps>) => {
+  return <div className={`w-full px-4 md:px-6 ${className}`}>{children}</div>;
 };
 
 export default HomeWrapper;

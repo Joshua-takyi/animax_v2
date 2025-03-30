@@ -14,7 +14,7 @@ export default function Home() {
     <div>
       <Hero />
 
-      <HomeWrapper>
+      <HomeWrapper className="flex flex-col  space-y-10">
         <section className="mt-5">
           <Trending />
           <Upcoming />
