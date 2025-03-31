@@ -13,9 +13,8 @@ export default function Home() {
   return (
     <div>
       <Hero />
-
       <HomeWrapper className="flex flex-col  space-y-10">
-        <section className="mt-5">
+        <section className="mt-5 flex flex-col lg:gap-y-10 gap-y-5">
           <Trending />
           <Upcoming />
         </section>

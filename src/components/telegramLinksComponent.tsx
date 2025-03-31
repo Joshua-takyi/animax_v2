@@ -209,7 +209,8 @@ export default function TelegramLinksComponent() {
             No Telegram channels found
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Try a different search query or check back later
+            {/* daily limit rate reached */}
+            Daily limit reached. Please try again later.
           </p>
         </div>
       </section>

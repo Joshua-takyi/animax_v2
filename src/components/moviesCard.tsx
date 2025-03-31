@@ -47,7 +47,7 @@ const MoviesCard = memo(function MoviesCard({
 
   return (
     <div
-      className="w-full h-[220px] sm:h-[260px] md:h-[300px] lg:h-[350px] relative overflow-hidden rounded-lg"
+      className="w-full h-[220px] sm:h-[260px] md:h-[300px] lg:h-[350px] relative overflow-hidden rounded-sm"
       itemScope
       itemType="https://schema.org/Movie"
     >

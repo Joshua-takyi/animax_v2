@@ -2,6 +2,7 @@
 
 import { GetAnime, MovieProps } from '@/action';
 import MoviesCard from '@/components/moviesCard';
+import { Wrapper } from '@/components/wrapper';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -184,7 +185,7 @@ export default function GetSeries() {
 
   return (
     <div className="min-h-screen">
-      <main className="container mx-auto">
+      <Wrapper>
         <AnimatePresence mode="wait" key={key}>
           <motion.div
             className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-4"
@@ -217,7 +218,7 @@ export default function GetSeries() {
             {isLoadingMore && <LoadingSpinner />}
           </div>
         )}
-      </main>
+      </Wrapper>
     </div>
   );
 }

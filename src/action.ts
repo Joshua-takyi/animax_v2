@@ -293,7 +293,9 @@ export async function GetTopAnime({
 
 const localUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://animax-v2.vercel.app/api'
+    ? process.env.DOMAIN
+    : process.env.PORT === '3001'
+    ? 'http://localhost:3001/api'
     : 'http://localhost:3000/api';
 export async function TelegramLinks({ query }: { query: string }): Promise<GetAnimeResponse> {
   try {
