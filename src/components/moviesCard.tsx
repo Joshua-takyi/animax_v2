@@ -29,10 +29,9 @@ const MoviesCard = memo(function MoviesCard({
 }: CardProps) {
   // Use useMemo for expensive computations
   const ratingLabel = useMemo(() => {
-    if (!rating) return 'Not Rated';
-    if (rating.includes('R -') || rating.includes('R+')) return '18+';
-    if (rating.includes('PG-13')) return '13+';
-    if (rating.includes('PG')) return '7+';
+    if (rating?.includes('R -') || rating?.includes('R+')) return '18+';
+    if (rating?.includes('PG-13')) return '13+';
+    if (rating?.includes('PG')) return '7+';
     return 'All Ages';
   }, [rating]);
 

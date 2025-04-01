@@ -139,7 +139,7 @@ export default function ProfilePage() {
       <nav aria-label="Breadcrumb" className="py-2 px-4">
         <ol className="flex items-center space-x-2 text-sm">
           {breadcrumbs.map((item, index) => (
-            <li key={item.href} className="flex items-center">
+            <li key={item.href} className="flex items-center text-sm font-semibold">
               {index > 0 && <span className="mx-2 text-gray-400">/</span>}
               {index === breadcrumbs.length - 1 ? (
                 <span className="text-primary">{item.name}</span>
@@ -153,7 +153,7 @@ export default function ProfilePage() {
         </ol>
       </nav>
 
-      <div className="min-h-screen pt-4 xl:pt-10 flex flex-col gap-5">
+      <div className="min-h-screen pt-4 xl:pt-10 flex flex-col gap-5 p-4">
         <MovieHeader
           duration={data.aired.string}
           rating={data.rating}

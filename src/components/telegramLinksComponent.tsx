@@ -73,7 +73,7 @@ export default function TelegramLinksComponent() {
             </div>
           </div>
 
-          {window.innerWidth >= 790 && result.snippet && (
+          {result.snippet && (
             <div className="p-4 pt-3 flex-1">
               <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
                 {result.snippet}

@@ -186,9 +186,9 @@ export default function AnimeSidebar({ animeId }: Readonly<{ animeId: string }>)
     if (isMobile) return null;
 
     return (
-      <div className="w-64 lg:w-72 border-l h-[calc(100vh-5rem)] flex flex-col">
+      <div className="w-64 lg:w-72 border-l border-gray-200 dark:border-gray-700 h-[calc(100vh-5rem)] flex flex-col">
         {/* Header skeleton */}
-        <div className="h-16 border-b bg-background p-4 flex justify-between items-center">
+        <div className="h-16 border-b border-gray-200 dark:border-gray-700 bg-background p-4 flex justify-between items-center">
           <div className="h-5 bg-primary/20 rounded w-32 animate-pulse"></div>
           <div className="h-5 w-5 rounded-full bg-primary/20 animate-pulse"></div>
         </div>
@@ -309,7 +309,7 @@ export default function AnimeSidebar({ animeId }: Readonly<{ animeId: string }>)
           }
           transition-transform duration-300 ease-in-out
           flex flex-col
-          h-[calc(100vh-5rem)]
+          ${isMobile ? 'h-full' : 'h-[calc(100vh-5rem)]'}
         `}
         aria-label="Anime recommendations"
         aria-hidden={isMobile && !isExpanded}
@@ -321,7 +321,7 @@ export default function AnimeSidebar({ animeId }: Readonly<{ animeId: string }>)
           {isMobile && (
             <button
               onClick={() => setIsExpanded(false)}
-              className="text-slate-500 p-1 rounded-full transition-colors hover:bg-slate-100"
+              className="text-slate-500 p-1 rounded-full transition-colors hover:bg-slate-100 "
               aria-label="Close sidebar"
             >
               <X size={18} />
@@ -333,7 +333,7 @@ export default function AnimeSidebar({ animeId }: Readonly<{ animeId: string }>)
         </div>
 
         {/* Scrollable content area */}
-        <div className="flex-1 ">
+        <div className="flex-1 overflow-y-auto">
           <div className="p-2 space-y-2">
             <SidebarContent />
           </div>

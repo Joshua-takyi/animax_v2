@@ -15,7 +15,7 @@ export default function MovieHeader({
 }: Readonly<MovieHeaderProps>) {
   return (
     <header className="py-4 w-full overflow-x-hidden">
-      <div className="flex flex-col" itemScope itemType="https://schema.org/Movie">
+      <div className="flex flex-col text-xs" itemScope itemType="https://schema.org/Movie">
         {/* Title section with structured data */}
         <h1 className="text-2xl md:text-4xl font-bold mb-1" itemProp="name">
           {title}

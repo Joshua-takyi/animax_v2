@@ -38,7 +38,7 @@ export default function SummaryComponent({
 
   return (
     <article
-      className="flex flex-col md:flex-row gap-4 p-4"
+      className="flex flex-col md:flex-row gap-4"
       itemScope
       itemType="https://schema.org/TVSeries"
     >

@@ -292,11 +292,7 @@ export async function GetTopAnime({
 }
 
 const localUrl =
-  process.env.NODE_ENV === 'production'
-    ? process.env.DOMAIN
-    : process.env.PORT === '3001'
-    ? 'http://localhost:3001/api'
-    : 'http://localhost:3000/api';
+  process.env.NODE_ENV === 'production' ? process.env.DOMAIN : 'http://localhost:3000/api';
 export async function TelegramLinks({ query }: { query: string }): Promise<GetAnimeResponse> {
   try {
     const res = await fetchWithCache(`${localUrl}/telegram?q=${query}`);
