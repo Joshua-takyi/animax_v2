@@ -314,7 +314,7 @@ export async function TelegramLinks({
   query: string;
 }): Promise<GetAnimeResponse> {
   try {
-    const res = await fetchWithCache(`${localUrl}/api/telegram?q=${query}`);
+    const res = await fetchWithCache(`${localUrl}/telegram?q=${query}`);
     return {
       data: res.results || [], // Access the results property from the API response
       message: "Telegram links fetched successfully",
