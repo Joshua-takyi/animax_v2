@@ -1,12 +1,12 @@
-'use client';
-import { TelegramLinks } from '@/action';
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import darkmode from '../../public/images/darkmode.png';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { useCallback, useMemo } from 'react';
+"use client";
+import { TelegramLinks } from "@/action";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import darkmode from "../../public/images/darkmode.png";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { useCallback, useMemo } from "react";
 
 interface TelegramLinkProps {
   title: string;
@@ -17,19 +17,41 @@ interface TelegramLinkProps {
 
 export default function TelegramLinksComponent() {
   const searchParams = useSearchParams();
-  const q = searchParams.get('q') as string;
+  const q = searchParams.get("q") as string;
 
   const { data, isLoading, error, isFetching } = useQuery({
-    queryKey: ['telegramLinks', q],
+    queryKey: ["telegramLinks", q],
     queryFn: async () => {
       const res = await TelegramLinks({
         query: q,
       });
+
+      // Handle API errors gracefully - if the search failed but returned a response,
+      // we still want to show the empty state rather than an error
+      if (!res.success && res.data.length === 0) {
+        // If there's a specific error message about rate limiting or timeout, preserve it
+        if (res.message.includes("limit") || res.message.includes("timeout")) {
+          throw new Error(res.message);
+        }
+        // For other errors, return empty array to show "no results" state
+        return [];
+      }
+
       return res.data as TelegramLinkProps[];
     },
     enabled: !!q,
     staleTime: 1000 * 60 * 5, // Cache results for 5 minutes
     refetchOnWindowFocus: false,
+    // Add retry logic for production reliability
+    retry: (failureCount, error) => {
+      // Don't retry if it's a rate limit error
+      if (error instanceof Error && error.message.includes("limit")) {
+        return false;
+      }
+      // Retry up to 2 times for other errors
+      return failureCount < 2;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 
   // Memoize the filtered data to avoid unnecessary re-renders
@@ -168,7 +190,19 @@ export default function TelegramLinksComponent() {
               ></path>
             </svg>
             <p className="text-red-600 dark:text-red-400">
-              {error instanceof Error ? error.message : 'Failed to load Telegram channels.'}
+              {(() => {
+                if (error && typeof error === "object" && "message" in error) {
+                  const errorMessage = (error as Error).message;
+                  if (errorMessage.includes("limit")) {
+                    return "Daily search limit reached. Please try again later.";
+                  }
+                  if (errorMessage.includes("timeout")) {
+                    return "Search request timed out. Please try again.";
+                  }
+                  return errorMessage;
+                }
+                return "Failed to load Telegram channels. Please try again.";
+              })()}
             </p>
           </div>
         </div>
@@ -209,8 +243,18 @@ export default function TelegramLinksComponent() {
             No Telegram channels found
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {/* daily limit rate reached */}
-            Daily limit reached. Please try again later.
+            {(() => {
+              if (error && typeof error === "object" && "message" in error) {
+                const errorMessage = (error as Error).message;
+                if (errorMessage.includes("limit")) {
+                  return "Daily search limit reached. Please try again later.";
+                }
+                if (errorMessage.includes("timeout")) {
+                  return "Search timed out. Please try again.";
+                }
+              }
+              return `No results found for "${q}". Try a different search term.`;
+            })()}
           </p>
         </div>
       </section>
@@ -229,7 +273,9 @@ export default function TelegramLinksComponent() {
         {isFetching && (
           <div className="flex items-center">
             <div className="w-4 h-4 border-t-2 border-blue-500 border-solid rounded-full animate-spin mr-2"></div>
-            <span className="text-xs text-gray-500 dark:text-gray-400">Refreshing...</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              Refreshing...
+            </span>
           </div>
         )}
       </div>

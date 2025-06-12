@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema, Model } from "mongoose";
 
 // Interface for the search results returned by Google Search API
 interface SearchResult {
@@ -44,14 +44,21 @@ const QuerySchema = new Schema<QueryProps>(
     lastUpdated: {
       type: Date,
       default: Date.now,
+      index: true, // Index for sorting by update time
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
+
+// Add compound indexes for better query performance
+QuerySchema.index({ query: 1, lastUpdated: -1 }); // Compound index for query + time sorting
+QuerySchema.index({ query: "text" }); // Text index for better search performance
 
 // Create the model, ensuring we don't recreate it if it already exists
 const Query: Model<QueryProps> =
-  mongoose.models.Query || mongoose.model<QueryProps>('Query', QuerySchema);
+  mongoose.models.Query || mongoose.model<QueryProps>("Query", QuerySchema);
 
 export default Query;
 export type { QueryProps, SearchResult };

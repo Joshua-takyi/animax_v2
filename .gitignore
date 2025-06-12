@@ -41,4 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # hides the endpoint from the public
-endpoint.md
+endpoint.m/d
+TELEGRAM_API_OPTIMIZATION.md
+
+/.github

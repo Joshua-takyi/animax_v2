@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "src/app/api/telegram/route.ts": {
+      "maxDuration": 10
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
