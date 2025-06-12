@@ -1,6 +1,6 @@
-'use server';
-import axios, { AxiosError } from 'axios';
-import { cache } from 'react';
+"use server";
+import axios, { AxiosError } from "axios";
+import { cache } from "react";
 const API = process.env.API_URL;
 const fetchWithRetry = cache(async (url: string, retries = 3, delay = 1000) => {
   try {
@@ -10,20 +10,22 @@ const fetchWithRetry = cache(async (url: string, retries = 3, delay = 1000) => {
     // Only use revalidate option on the server side
     const fetchOptions = {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
       next: {
         // Increase revalidation time to reduce unnecessary server fetches
         revalidate: 3600 * 2, // 2 hours
-        tags: ['anime-data'],
+        tags: ["anime-data"],
       },
     };
 
     const response = await fetch(url, fetchOptions);
 
     if (response.status === 429 && retries > 0) {
-      console.log(`Rate limited. Retrying in ${delay}ms... (${retries} retries left)`);
+      console.log(
+        `Rate limited. Retrying in ${delay}ms... (${retries} retries left)`,
+      );
       await new Promise((resolve) => setTimeout(resolve, delay));
       return fetchWithRetry(url, retries - 1, delay * 2);
     }
@@ -107,7 +109,7 @@ export async function GetAnime({
       return {
         data: res.data.data || [],
         success: true,
-        message: 'Movies fetched successfully',
+        message: "Movies fetched successfully",
       };
     }
     // Handle non-200 responses
@@ -121,19 +123,20 @@ export async function GetAnime({
       const axiosError = error as AxiosError<{ message: string }>;
       let errorMessage = axiosError.response?.data.message;
       if (axiosError.response?.status === 404) {
-        errorMessage = 'No data found';
+        errorMessage = "No data found";
       }
       return {
         data: [],
         success: false,
-        message: errorMessage || 'An unknown error occurred',
+        message: errorMessage || "An unknown error occurred",
       };
     }
 
     return {
       data: [],
       success: false,
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
     };
   }
 }
@@ -158,13 +161,14 @@ export async function GetSeasonNow({
     return {
       data: data.data || [], // Access data properly from axios response
       success: true,
-      message: 'Top Anime fetched successfully',
+      message: "Top Anime fetched successfully",
     };
   } catch (error) {
     return {
       data: [],
       success: false,
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
     };
   }
 }
@@ -176,22 +180,23 @@ interface GetAnimeRecommendationProps {
   limit?: number;
 }
 export async function GetAnimeRecommendations({
-  order_by = 'popularity',
+  order_by = "popularity",
   id,
   limit = 10,
 }: Readonly<GetAnimeRecommendationProps>): Promise<GetAnimeResponse> {
   try {
     const data = await fetchWithCache(
-      `${API}/anime/${id}/recommendations?limit=${limit}&order_by=${order_by}`
+      `${API}/anime/${id}/recommendations?limit=${limit}&order_by=${order_by}`,
     );
     return {
       data: data.data || [],
-      message: 'Anime recommendations fetched successfully',
+      message: "Anime recommendations fetched successfully",
       success: true,
     };
   } catch (error) {
     return {
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
       data: [],
     };
@@ -207,31 +212,37 @@ export async function GetCharacterInfo({
     // if (res.status === 200)
     return {
       data: res.data || [],
-      message: 'Character information fetched successfully',
+      message: "Character information fetched successfully",
       success: true,
     };
   } catch (error) {
     return {
       data: [],
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
     };
   }
 }
 
-export async function GetAnimeById({ id }: { id: string }): Promise<GetAnimeResponse> {
+export async function GetAnimeById({
+  id,
+}: {
+  id: string;
+}): Promise<GetAnimeResponse> {
   try {
     const res = await fetchWithCache(`${API}/anime/${id}`);
     // if (res.status === 200) {
     return {
       success: true,
-      message: 'Anime fetched successfully',
+      message: "Anime fetched successfully",
       data: res.data || [],
     };
   } catch (error) {
     return {
       data: [],
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
     };
   }
@@ -252,13 +263,14 @@ export async function GetUpcomingAnime({
     const res = await fetchWithCache(uri);
     return {
       success: true,
-      message: 'Upcoming Anime fetched successfully',
+      message: "Upcoming Anime fetched successfully",
       data: res.data || [],
     };
   } catch (error) {
     return {
       data: [],
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
     };
   }
@@ -270,7 +282,7 @@ interface GetTopAnimeProps {
   type?: string;
 }
 export async function GetTopAnime({
-  filter = 'bypopularity',
+  filter = "bypopularity",
   limit = 5,
   type,
 }: Readonly<GetTopAnimeProps>): Promise<GetAnimeResponse> {
@@ -280,33 +292,39 @@ export async function GetTopAnime({
     return {
       data: data.data || [],
       success: true,
-      message: 'Top Anime fetched successfully',
+      message: "Top Anime fetched successfully",
     };
   } catch (error) {
     return {
       data: [],
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
     };
   }
 }
 
 const localUrl =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_DOMAIN
     : process.env.NEXT_PUBLIC_URL;
-export async function TelegramLinks({ query }: { query: string }): Promise<GetAnimeResponse> {
+export async function TelegramLinks({
+  query,
+}: {
+  query: string;
+}): Promise<GetAnimeResponse> {
   try {
     const res = await fetchWithCache(`${localUrl}/telegram?q=${query}`);
     return {
       data: res.results || [], // Access the results property from the API response
-      message: 'Telegram links fetched successfully',
+      message: "Telegram links fetched successfully",
       success: true,
     };
   } catch (error) {
     return {
       data: [],
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
     };
   }
@@ -325,12 +343,13 @@ export async function GetAnimeBySearch({
     return {
       data: res.data || [],
       success: true,
-      message: 'Anime fetched successfully',
+      message: "Anime fetched successfully",
     };
   } catch (error) {
     return {
       data: [],
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
     };
   }
@@ -346,12 +365,13 @@ export async function GetAnimeEpisodesById({
     return {
       data: res.data || [],
       success: true,
-      message: 'Episodes fetched successfully',
+      message: "Episodes fetched successfully",
     };
   } catch (error) {
     return {
       data: [],
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       success: false,
     };
   }
