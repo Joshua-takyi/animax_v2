@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error";
 import { GridSkeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -42,11 +41,7 @@ export default function RecommendationsPage() {
   const params = useParams();
   const id = params.id as string;
 
-  const {
-    data: anime,
-    isLoading: infoLoading,
-    isError: infoError,
-  } = useQuery({
+  const { data: anime, isError: infoError } = useQuery({
     queryKey: ["anime-info", id],
     queryFn: async () => {
       const res = await GetAnimeById({ id });

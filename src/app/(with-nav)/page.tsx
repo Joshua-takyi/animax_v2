@@ -1,14 +1,8 @@
 import GenresComponent from "@/components/genres";
-import Airing from "./airing";
-import Popularity from "./byPopularity";
-import Favorite from "./favorite";
 import Hero from "./hero";
-import FavMovies from "./movies";
 import Trending from "./trending";
 import Upcoming from "./upcomingMovies";
-import HomeWrapper from "./homeWrapper";
 import PostGridComponent from "@/components/postGridComponent";
-import SeasonSpotlight from "./seasonSpotlight";
 import LatestReleases from "./latestReleases";
 import {
   dehydrate,
