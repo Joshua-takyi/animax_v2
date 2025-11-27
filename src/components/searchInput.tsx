@@ -1,6 +1,12 @@
-import { SearchIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState, useCallback, FormEvent, KeyboardEvent, RefObject } from 'react';
+import { SearchIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  useState,
+  useCallback,
+  FormEvent,
+  KeyboardEvent,
+  RefObject,
+} from "react";
 
 interface SearchInputProps {
   placeholder?: string;
@@ -10,19 +16,19 @@ interface SearchInputProps {
 }
 
 export default function SearchInput({
-  placeholder = 'Search for movies...',
-  className = '',
+  placeholder = "Search for movies...",
+  className = "",
   inputRef,
   onClose,
 }: SearchInputProps) {
-  const [search, setSearch] = useState<string>('');
+  const [search, setSearch] = useState<string>("");
   const router = useRouter();
 
   const handleRedirect = useCallback(() => {
     const trimmedSearch = search.trim();
     if (trimmedSearch.length === 0) return;
 
-    const sanitizedSearch = trimmedSearch.replace(/[<>]/g, '');
+    const sanitizedSearch = trimmedSearch.replace(/[<>]/g, "");
     router.push(`/search?q=${encodeURIComponent(sanitizedSearch)}`);
 
     // Close search dropdown when navigating
@@ -39,10 +45,10 @@ export default function SearchInput({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         e.preventDefault();
         handleRedirect();
-      } else if (e.key === 'Escape' && onClose) {
+      } else if (e.key === "Escape" && onClose) {
         e.preventDefault();
         onClose();
       }
@@ -61,7 +67,7 @@ export default function SearchInput({
           ref={inputRef}
           type="text"
           name="search"
-          className="w-full px-3 sm:px-4 py-2 text-[16px] border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-colors dark:text-white dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400"
+          className="w-full px-3 sm:px-4 py-2 text-[16px] border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-colors dark:text-white  dark:border-gray-700 dark:placeholder-gray-400"
           placeholder={placeholder}
           onChange={(e) => setSearch(e.target.value)}
           value={search}

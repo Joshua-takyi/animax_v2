@@ -1,20 +1,15 @@
 "use server";
-import axios, { AxiosError } from "axios";
 import { cache } from "react";
 const API = process.env.API_URL;
+
 const fetchWithRetry = cache(async (url: string, retries = 3, delay = 1000) => {
   try {
-    // Determine if we're in a browser environment
-    // const isBrowser = typeof window !== 'undefined';
-
-    // Only use revalidate option on the server side
     const fetchOptions = {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
       next: {
-        // Increase revalidation time to reduce unnecessary server fetches
         revalidate: 3600 * 2, // 2 hours
         tags: ["anime-data"],
       },
@@ -24,7 +19,7 @@ const fetchWithRetry = cache(async (url: string, retries = 3, delay = 1000) => {
 
     if (response.status === 429 && retries > 0) {
       console.log(
-        `Rate limited. Retrying in ${delay}ms... (${retries} retries left)`,
+        `Rate limited. Retrying in ${delay}ms... (${retries} retries left)`
       );
       await new Promise((resolve) => setTimeout(resolve, delay));
       return fetchWithRetry(url, retries - 1, delay * 2);
@@ -40,30 +35,28 @@ const fetchWithRetry = cache(async (url: string, retries = 3, delay = 1000) => {
   }
 });
 
-// Replace the old fetchWithCache with our new implementation
 const fetchWithCache = fetchWithRetry;
 
-// get [movies,series,ove,types,q]
 export interface MovieProps {
   mal_id: number;
-  title: string;
-  rating: string;
-  score: number;
-  status: string;
-  synopsis: string;
-  title_japanese: string;
-  episodes: number;
+  title?: string;
+  title_english?: string;
+  rating?: string;
+  score?: number;
+  status?: string;
+  synopsis?: string;
+  title_japanese?: string;
+  episodes?: number;
   aired: {
     string: string;
   };
-  type: string;
+  type?: string;
   genres?: { mal_id: number; name: string }[];
   images: {
     jpg: {
       large_image_url: string;
     };
   };
-  // ... other properties as needed
 }
 
 type GetAnimeResponse = {
@@ -92,46 +85,30 @@ export async function GetAnime({
   order_by: string;
 }): Promise<GetAnimeResponse> {
   try {
-    const res = await axios.get(`${API}/anime?`, {
-      params: {
-        q,
-        type,
-        rating,
-        status,
-        page,
-        limit,
-        genres,
-        order_by,
-      },
+    const params = new URLSearchParams({
+      q: q || "",
+      type: type || "",
+      rating: rating || "",
+      status: status || "",
+      page: page?.toString() || "1",
+      limit: limit?.toString() || "18",
+      genres: genres || "",
+      order_by: order_by || "",
     });
-    if (res.status === 200) {
-      // Successfully fetched data
-      return {
-        data: res.data.data || [],
-        success: true,
-        message: "Movies fetched successfully",
-      };
-    }
-    // Handle non-200 responses
-    return {
-      data: [],
-      success: false,
-      message: `Request failed with status: ${res.status}`,
-    };
-  } catch (error) {
-    if (axios.AxiosError) {
-      const axiosError = error as AxiosError<{ message: string }>;
-      let errorMessage = axiosError.response?.data.message;
-      if (axiosError.response?.status === 404) {
-        errorMessage = "No data found";
-      }
-      return {
-        data: [],
-        success: false,
-        message: errorMessage || "An unknown error occurred",
-      };
+
+    // Remove empty params
+    for (const [key, value] of Array.from(params.entries())) {
+      if (!value) params.delete(key);
     }
 
+    const res = await fetchWithCache(`${API}/anime?${params.toString()}`);
+
+    return {
+      data: res.data || [],
+      success: true,
+      message: "Movies fetched successfully",
+    };
+  } catch (error) {
     return {
       data: [],
       success: false,
@@ -152,14 +129,16 @@ export async function GetSeasonNow({
   type,
 }: Readonly<GetSeasonNowProps>): Promise<GetAnimeResponse> {
   try {
-    // Construct the URL
-    const url = `${API}/seasons/now?limit=${limit}&filter=${filter}&type=${type}`;
+    const params = new URLSearchParams();
+    if (limit) params.append("limit", limit.toString());
+    if (filter) params.append("filter", filter);
+    if (type) params.append("type", type);
 
-    // Use axios for consistent parameter handling across functions
+    const url = `${API}/seasons/now?${params.toString()}`;
     const data = await fetchWithCache(url);
 
     return {
-      data: data.data || [], // Access data properly from axios response
+      data: data.data || [],
       success: true,
       message: "Top Anime fetched successfully",
     };
@@ -173,7 +152,6 @@ export async function GetSeasonNow({
   }
 }
 
-// get anime recommendations
 interface GetAnimeRecommendationProps {
   order_by?: string;
   id: string;
@@ -186,7 +164,7 @@ export async function GetAnimeRecommendations({
 }: Readonly<GetAnimeRecommendationProps>): Promise<GetAnimeResponse> {
   try {
     const data = await fetchWithCache(
-      `${API}/anime/${id}/recommendations?limit=${limit}&order_by=${order_by}`,
+      `${API}/anime/${id}/recommendations?limit=${limit}&order_by=${order_by}`
     );
     return {
       data: data.data || [],
@@ -203,13 +181,11 @@ export async function GetAnimeRecommendations({
   }
 }
 
-// get character information
 export async function GetCharacterInfo({
   id,
 }: Readonly<{ id: string }>): Promise<GetAnimeResponse> {
   try {
     const res = await fetchWithCache(`${API}/anime/${id}/characters`);
-    // if (res.status === 200)
     return {
       data: res.data || [],
       message: "Character information fetched successfully",
@@ -232,7 +208,6 @@ export async function GetAnimeById({
 }): Promise<GetAnimeResponse> {
   try {
     const res = await fetchWithCache(`${API}/anime/${id}`);
-    // if (res.status === 200) {
     return {
       success: true,
       message: "Anime fetched successfully",
@@ -247,6 +222,7 @@ export async function GetAnimeById({
     };
   }
 }
+
 interface GetAnimeBySeasonProps {
   filter?: string;
   limit?: number;
@@ -259,7 +235,13 @@ export async function GetUpcomingAnime({
   continuing = true,
 }: Readonly<GetAnimeBySeasonProps>): Promise<GetAnimeResponse> {
   try {
-    const uri = `${API}/seasons/upcoming?limit=${limit}&filter=${filter}&continuing=${continuing}`;
+    const params = new URLSearchParams();
+    if (limit) params.append("limit", limit.toString());
+    if (filter) params.append("filter", filter);
+    if (continuing !== undefined)
+      params.append("continuing", continuing.toString());
+
+    const uri = `${API}/seasons/upcoming?${params.toString()}`;
     const res = await fetchWithCache(uri);
     return {
       success: true,
@@ -287,7 +269,12 @@ export async function GetTopAnime({
   type,
 }: Readonly<GetTopAnimeProps>): Promise<GetAnimeResponse> {
   try {
-    const uri = `${API}/top/anime?limit=${limit}&filter=${filter}&type=${type}`;
+    const params = new URLSearchParams();
+    if (limit) params.append("limit", limit.toString());
+    if (filter) params.append("filter", filter);
+    if (type) params.append("type", type);
+
+    const uri = `${API}/top/anime?${params.toString()}`;
     const data = await fetchWithCache(uri);
     return {
       data: data.data || [],
@@ -308,6 +295,7 @@ const localUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_DOMAIN
     : process.env.NEXT_PUBLIC_URL;
+
 export async function TelegramLinks({
   query,
 }: {
@@ -316,7 +304,7 @@ export async function TelegramLinks({
   try {
     const res = await fetchWithCache(`${localUrl}/telegram?q=${query}`);
     return {
-      data: res.results || [], // Access the results property from the API response
+      data: res.results || [],
       message: "Telegram links fetched successfully",
       success: true,
     };
@@ -329,6 +317,7 @@ export async function TelegramLinks({
     };
   }
 }
+
 interface GetAnimeBySearchProps {
   query?: string;
   genre?: string;
@@ -338,8 +327,11 @@ export async function GetAnimeBySearch({
   genre,
 }: GetAnimeBySearchProps): Promise<GetAnimeResponse> {
   try {
-    // Fixed parameter name from 'genres' to 'genre' to match interface definition
-    const res = await fetchWithCache(`${API}/anime?q=${query}&genres=${genre}`);
+    const params = new URLSearchParams();
+    if (query) params.append("q", query);
+    if (genre) params.append("genres", genre);
+
+    const res = await fetchWithCache(`${API}/anime?${params.toString()}`);
     return {
       data: res.data || [],
       success: true,

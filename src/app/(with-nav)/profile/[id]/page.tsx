@@ -1,14 +1,14 @@
-'use client';
-import { GetAnimeById } from '@/action';
-import { CharacterComponent } from '@/components/character';
-import { Episode } from '@/components/episode';
-import MovieHeader from '@/components/header';
-import SummaryComponent from '@/components/summary';
-import TelegramLinksComponent from '@/components/telegramLinksComponent';
-import VideoSection from '@/components/videoSection';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
+"use client";
+import { GetAnimeById } from "@/action";
+import { CharacterComponent } from "@/components/character";
+import { Episode } from "@/components/episode";
+import MovieHeader from "@/components/header";
+import SummaryComponent from "@/components/summary";
+import TelegramLinksComponent from "@/components/telegramLinksComponent";
+import VideoSection from "@/components/videoSection";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
 interface AnimeData {
   mal_id: string;
@@ -55,20 +55,19 @@ export default function ProfilePage() {
   const id = params.id as string;
 
   const { data, error } = useQuery<AnimeData>({
-    queryKey: ['AnimeById', id],
+    queryKey: ["AnimeById", id],
     queryFn: async () => {
       const res = await GetAnimeById({
         id: id,
       });
       if (!res.success || !res.data) {
-        throw new Error('No data found');
+        throw new Error("No data found");
       }
       if (Array.isArray(res.data) && res.data.length === 0) {
-        throw new Error('No data found');
+        throw new Error("No data found");
       }
       return res.data as unknown as AnimeData;
     },
-    networkMode: 'always',
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
   });
@@ -101,17 +100,19 @@ export default function ProfilePage() {
     );
   }
 
-  const japaneseTitle = data.titles.find((title) => title.type === 'Japanese')?.title ?? '';
-  const englishTitle = data.titles.find((title) => title.type === 'English')?.title ?? '';
+  const japaneseTitle =
+    data.titles.find((title) => title.type === "Japanese")?.title ?? "";
+  const englishTitle =
+    data.titles.find((title) => title.type === "English")?.title ?? "";
 
   // Generate breadcrumb list
   const breadcrumbs = [
-    { name: 'Home', href: '/' },
+    { name: "Home", href: "/" },
     {
-      name: data.type === 'Movie' ? 'Movies' : 'TV Series',
-      href: data.type === 'Movie' ? '/movies' : '/tv-series',
+      name: data.type === "Movie" ? "Movies" : "TV Series",
+      href: data.type === "Movie" ? "/movies" : "/tv-series",
     },
-    { name: englishTitle || japaneseTitle, href: '#' },
+    { name: englishTitle || japaneseTitle, href: "#" },
   ];
 
   return (
@@ -121,13 +122,13 @@ export default function ProfilePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
             itemListElement: breadcrumbs.map((item, index) => ({
-              '@type': 'ListItem',
+              "@type": "ListItem",
               position: index + 1,
               item: {
-                '@id': `https://animax-v2.vercel.app/${item.href}`,
+                "@id": `https://animax-v2.vercel.app/${item.href}`,
                 name: item.name,
               },
             })),
@@ -139,12 +140,18 @@ export default function ProfilePage() {
       <nav aria-label="Breadcrumb" className="py-2 px-4">
         <ol className="flex items-center space-x-2 text-sm">
           {breadcrumbs.map((item, index) => (
-            <li key={item.href} className="flex items-center text-sm font-semibold">
+            <li
+              key={item.href}
+              className="flex items-center text-sm font-semibold"
+            >
               {index > 0 && <span className="mx-2 text-gray-400">/</span>}
               {index === breadcrumbs.length - 1 ? (
                 <span className="text-primary">{item.name}</span>
               ) : (
-                <Link href={item.href} className="text-muted-foreground hover:text-primary">
+                <Link
+                  href={item.href}
+                  className="text-muted-foreground hover:text-primary"
+                >
                   {item.name}
                 </Link>
               )}
@@ -162,7 +169,9 @@ export default function ProfilePage() {
           year={data.aired.string}
         />
 
-        {data.trailer?.youtube_id && <VideoSection videoUrl={data.trailer.youtube_id} />}
+        {data.trailer?.youtube_id && (
+          <VideoSection videoUrl={data.trailer.youtube_id} />
+        )}
 
         <SummaryComponent
           genres={data.genres.map((genre) => genre.name)}

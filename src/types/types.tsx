@@ -51,6 +51,7 @@ export interface ArrowProps {
 
 export interface CardProps {
   title_english: string | null; // Make it nullable since the API might return null
+  title?: string | null;
   images: {
     jpg: {
       large_image_url: string;

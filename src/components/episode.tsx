@@ -1,11 +1,11 @@
-'use client';
-import { GetAnimeEpisodesById } from '@/action';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
-import { ChevronDown, Filter } from 'lucide-react';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
+"use client";
+import { GetAnimeEpisodesById } from "@/action";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { ChevronDown, Filter } from "lucide-react";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 interface EpisodeProp {
   mal_id: number;
@@ -21,7 +21,7 @@ export const Episode = () => {
   const id = params.id as string;
 
   const { data, isLoading } = useQuery({
-    queryKey: ['episode', id],
+    queryKey: ["episode", id],
     queryFn: async () => {
       const res = await GetAnimeEpisodesById({
         animeId: id,
@@ -65,7 +65,9 @@ export const Episode = () => {
   // Display episodes based on filter and expansion state
   const initialLimit = 15;
   const displayData = showFillerOnly ? fillerEpisodes : data;
-  const displayEpisodes = expanded ? displayData : displayData.slice(0, initialLimit);
+  const displayEpisodes = expanded
+    ? displayData
+    : displayData.slice(0, initialLimit);
   const hasMore = displayData.length > initialLimit;
 
   return (
@@ -73,7 +75,7 @@ export const Episode = () => {
       {/* Header with filter options */}
       <div className="flex flex-wrap gap-2 items-center justify-between">
         <h2 className="text-lg font-medium">
-          Episodes{' '}
+          Episodes{" "}
           <Badge variant="outline" className="text-xs ml-1">
             {data.length}
           </Badge>
@@ -85,12 +87,12 @@ export const Episode = () => {
             variant="outline"
             size="sm"
             className={`text-xs px-3 gap-1.5 ${
-              showFillerOnly ? 'bg-primary/10 border-primary/20' : ''
+              showFillerOnly ? "bg-primary/10 border-primary/20" : ""
             }`}
             onClick={() => setShowFillerOnly(!showFillerOnly)}
           >
             <Filter size={14} />
-            {showFillerOnly ? 'Show All' : 'Filler Episodes'}
+            {showFillerOnly ? "Show All" : "Filler Episodes"}
             {showFillerOnly && (
               <Badge variant="secondary" className="ml-1 text-[10px]">
                 {fillerEpisodes.length}
@@ -102,8 +104,8 @@ export const Episode = () => {
 
       {/* Episodes grid with responsive columns */}
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2">
-        {displayEpisodes.map((episode) => (
-          <EpisodeCard key={episode.mal_id} episode={episode} />
+        {displayEpisodes.map((episode, index) => (
+          <EpisodeCard key={`${episode.mal_id}-${index}`} episode={episode} />
         ))}
       </div>
 
@@ -115,8 +117,12 @@ export const Episode = () => {
           className="w-full mt-2 flex items-center justify-center gap-1.5"
           onClick={() => setExpanded(!expanded)}
         >
-          <ChevronDown className={`h-4 w-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
-          {expanded ? 'Show Less' : `Show All (${displayData.length})`}
+          <ChevronDown
+            className={`h-4 w-4 transition-transform ${
+              expanded ? "rotate-180" : ""
+            }`}
+          />
+          {expanded ? "Show Less" : `Show All (${displayData.length})`}
         </Button>
       )}
     </div>
@@ -130,8 +136,8 @@ const EpisodeCard = ({ episode }: { episode: EpisodeProp }) => {
         w-full text-center py-2 px-3 rounded-md border ease-in cursor-pointer hover:scale-103 transition-all
         ${
           episode.filler
-            ? 'border-amber-300/30 bg-amber-50/30 dark:bg-amber-900/10 hover:bg-amber-100/50 dark:hover:bg-amber-900/20'
-            : 'border-border hover:bg-muted/50'
+            ? "border-amber-300/30 bg-amber-50/30 dark:bg-amber-900/10 hover:bg-amber-100/50 dark:hover:bg-amber-900/20"
+            : "border-border hover:bg-muted/50"
         }
       `}
     >

@@ -4,24 +4,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 
-interface CardProps {
+interface AnimeCardProps {
   title_english: string | null;
+  title?: string; // Added fallback title
   images: string;
   mal_id: number;
   rating?: string | null;
   score?: number;
   type?: string;
   episodes?: number;
-  aired?: { string: string };
 }
 
-const MoviesCard = memo(function MoviesCard({
+const AnimeCard = memo(function AnimeCard({
   title_english,
+  title,
   images,
   mal_id,
   score,
-}: CardProps) {
-  const urlSafeTitle = encodeURIComponent(title_english || "");
+}: AnimeCardProps) {
+  const displayTitle = title_english || title || "Untitled";
+  const urlSafeTitle = encodeURIComponent(displayTitle);
 
   return (
     <Link
@@ -31,10 +33,10 @@ const MoviesCard = memo(function MoviesCard({
     >
       <div className="space-y-2">
         {/* Image */}
-        <div className="relative aspect-[2/3] overflow-hidden rounded-md bg-muted">
+        <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-muted">
           <Image
             src={images}
-            alt={title_english || "Anime"}
+            alt={displayTitle}
             fill
             loading="lazy"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -47,7 +49,7 @@ const MoviesCard = memo(function MoviesCard({
 
           {/* Score - minimal badge */}
           {score && (
-            <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm">
+            <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-black/70 backdrop-blur-sm">
               <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
               <span className="text-xs font-medium text-white">
                 {score.toFixed(1)}
@@ -58,13 +60,13 @@ const MoviesCard = memo(function MoviesCard({
 
         {/* Title - clean and simple */}
         <h3 className="text-sm font-medium line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-          {title_english || "Untitled"}
+          {displayTitle}
         </h3>
       </div>
     </Link>
   );
 });
 
-MoviesCard.displayName = "MoviesCard";
+AnimeCard.displayName = "AnimeCard";
 
-export default MoviesCard;
+export default AnimeCard;

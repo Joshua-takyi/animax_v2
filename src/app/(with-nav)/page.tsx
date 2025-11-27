@@ -1,40 +1,179 @@
-import GenresComponent from '@/components/genres';
-import Airing from './airing';
-import Popularity from './byPopularity';
-import Favorite from './favorite';
-import Hero from './hero';
-import FavMovies from './movies';
-import Trending from './trending';
-import Upcoming from './upcomingMovies';
-import HomeWrapper from './homeWrapper';
-import PostGridComponent from '@/components/postGridComponent';
+import GenresComponent from "@/components/genres";
+import Airing from "./airing";
+import Popularity from "./byPopularity";
+import Favorite from "./favorite";
+import Hero from "./hero";
+import FavMovies from "./movies";
+import Trending from "./trending";
+import Upcoming from "./upcomingMovies";
+import HomeWrapper from "./homeWrapper";
+import PostGridComponent from "@/components/postGridComponent";
+import SeasonSpotlight from "./seasonSpotlight";
+import LatestReleases from "./latestReleases";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import {
+  GetSeasonNow,
+  GetUpcomingAnime,
+  GetTopAnime,
+  GetAnime,
+} from "@/action";
+import { CardProps } from "@/types/types";
+import { Wrapper } from "@/components/wrapper";
 
-export default function Home() {
+export default async function Home() {
+  const queryClient = new QueryClient();
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["trending"],
+      queryFn: async () => {
+        const res = await GetSeasonNow({
+          limit: 10,
+          filter: "tv",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["upcoming"],
+      queryFn: async () => {
+        const res = await GetUpcomingAnime({
+          limit: 10,
+          filter: "movie",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["favorite"],
+      queryFn: async () => {
+        const res = await GetTopAnime({
+          limit: 5,
+          filter: "favorite",
+          type: "tv",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["popularity"],
+      queryFn: async () => {
+        const res = await GetTopAnime({
+          limit: 5,
+          filter: "bypopularity",
+          type: "tv",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["airing"],
+      queryFn: async () => {
+        const res = await GetTopAnime({
+          limit: 5,
+          filter: "airing",
+          type: "tv",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["favMovies"],
+      queryFn: async () => {
+        const res = await GetTopAnime({
+          limit: 5,
+          filter: "bypopularity",
+          type: "movie",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["posts", "movie"],
+      queryFn: async () => {
+        const res = await GetTopAnime({
+          limit: 10,
+          type: "movie",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["posts", "tv"],
+      queryFn: async () => {
+        const res = await GetTopAnime({
+          limit: 10,
+          type: "tv",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["posts", "special"],
+      queryFn: async () => {
+        const res = await GetTopAnime({
+          limit: 10,
+          type: "special",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["season-spotlight"],
+      queryFn: async () => {
+        const res = await GetSeasonNow({
+          limit: 8,
+          filter: "tv",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["latest-releases"],
+      queryFn: async () => {
+        const res = await GetAnime({
+          q: "",
+          type: "",
+          rating: "",
+          status: "airing",
+          page: 1,
+          limit: 12,
+          genres: "",
+          order_by: "popularity",
+        });
+        return res.data as CardProps[];
+      },
+    }),
+  ]);
+
   return (
-    <div>
-      <Hero />
-      <HomeWrapper className="flex flex-col  space-y-10">
-        <section className="mt-5 flex flex-col lg:gap-y-10 gap-y-5">
-          <Trending />
-          <Upcoming />
-        </section>
-        <section className="grid md:grid-cols-3 lg:grid-cols-4 gap-2 grid-cols-1 mt-5">
-          <Favorite />
-          <Popularity />
-          <Airing />
-          <FavMovies />
-        </section>
-        <div className="flex px-2 gap-y-5 gap-x-2 mt-5">
-          <div className="flex-1 flex flex-col gap-5">
-            <PostGridComponent title="movies" type="movie" />
-            <PostGridComponent title="Tv series" type="tv" />
-            <PostGridComponent title="special" type="special" />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="space-y-12">
+        <Hero />
+        <Wrapper>
+          <div>
+            <aside className="hidden lg:block ">
+              <GenresComponent />
+            </aside>
           </div>
-          <aside className="hidden lg:flex flex-col ">
-            <GenresComponent />
-          </aside>
-        </div>
-      </HomeWrapper>
-    </div>
+          <section className="space-y-12">
+            <Trending />
+            <Upcoming />
+          </section>
+          <LatestReleases />
+          <div className="flex gap-8">
+            <div className="flex-1 space-y-12">
+              <PostGridComponent title="movies" type="movie" />
+              <PostGridComponent title="Tv series" type="tv" />
+              <PostGridComponent title="special" type="special" />
+            </div>
+          </div>
+        </Wrapper>
+      </div>
+    </HydrationBoundary>
   );
 }

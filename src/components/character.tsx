@@ -1,20 +1,20 @@
-'use client';
-import { GetCharacterInfo } from '@/action';
-import { useQuery } from '@tanstack/react-query';
-import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ChevronUp, ChevronDown, Info, Mic } from 'lucide-react';
+"use client";
+import { GetCharacterInfo } from "@/action";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronUp, ChevronDown, Info, Mic } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 
 // Define interfaces for better type safety
 interface VoiceActor {
@@ -65,12 +65,16 @@ const CharacterCard = ({
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <Card 
+    <Card
       className={`
         group relative overflow-hidden transition-all duration-300 
         backdrop-blur-sm bg-background/80 border-none
         shadow hover:shadow-md rounded-xl
-        ${isFlipped ? 'ring-1 ring-primary/40' : 'ring-1 ring-border/10 hover:ring-primary/20'}
+        ${
+          isFlipped
+            ? "ring-1 ring-primary/40"
+            : "ring-1 ring-border/10 hover:ring-primary/20"
+        }
       `}
       onClick={() => setIsFlipped(!isFlipped)}
     >
@@ -78,8 +82,8 @@ const CharacterCard = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className={`
                   px-1.5 py-0 text-[10px] font-medium uppercase tracking-wider
                   bg-primary/10 hover:bg-primary/20 text-primary backdrop-blur-md
@@ -100,11 +104,13 @@ const CharacterCard = ({
         <div className="flex items-center space-x-2 sm:space-x-3">
           {/* Character section with properly sized image */}
           <div className="relative flex-shrink-0">
-            <div 
+            <div
               className={`
                 relative w-14 h-16 sm:w-16 sm:h-20 overflow-hidden rounded-lg transition-transform
                 duration-300 group-hover:scale-105
-                ${isFlipped ? 'ring-1 ring-primary/30' : 'ring-1 ring-border/10'}
+                ${
+                  isFlipped ? "ring-1 ring-primary/30" : "ring-1 ring-border/10"
+                }
               `}
             >
               <Image
@@ -120,28 +126,30 @@ const CharacterCard = ({
 
           {/* Character info with enhanced styling */}
           <div className="flex-1 min-w-0">
-            <h3 
+            <h3
               className="text-sm sm:text-base font-medium leading-tight mb-0.5
                          bg-gradient-to-r from-foreground to-foreground/70
                          bg-clip-text text-transparent truncate"
             >
               {characterName}
             </h3>
-            
+
             <div className="flex items-center space-x-1 mt-0.5">
               <Info className="h-2.5 w-2.5 text-muted-foreground" />
-              <span className="text-[10px] sm:text-xs text-muted-foreground">Character</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground">
+                Character
+              </span>
             </div>
-            
+
             {/* Animated divider */}
             <div className="my-1.5 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent opacity-30"></div>
-            
+
             {/* Voice actor section */}
             {voiceActor && (
               <div className="flex items-center space-x-2 mt-1.5">
                 <div className="flex-shrink-0">
                   {voiceActorImage ? (
-                    <Avatar 
+                    <Avatar
                       className={`
                         h-7 w-7 sm:h-8 sm:w-8 border-2 border-background 
                         ring-1 ring-border/10 
@@ -159,12 +167,14 @@ const CharacterCard = ({
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-xs sm:text-sm leading-none truncate">{voiceActor}</p>
+                  <p className="font-medium text-xs sm:text-sm leading-none truncate">
+                    {voiceActor}
+                  </p>
                   {language && (
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className="mt-0.5 text-[8px] px-1 py-0 bg-secondary/10 border-none text-secondary-foreground"
                     >
                       {language}
@@ -177,7 +187,9 @@ const CharacterCard = ({
             {!voiceActor && (
               <div className="flex items-center space-x-1.5 mt-1.5 text-muted-foreground">
                 <Mic className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span className="text-[10px] sm:text-xs italic">No voice actor data</span>
+                <span className="text-[10px] sm:text-xs italic">
+                  No voice actor data
+                </span>
               </div>
             )}
           </div>
@@ -185,10 +197,12 @@ const CharacterCard = ({
 
         {/* Interactive indicator */}
         <div className="absolute bottom-1 right-1">
-          <div className={`
+          <div
+            className={`
             h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full transition-colors duration-300
-            ${isFlipped ? 'bg-primary' : 'bg-muted-foreground/30'}
-          `}></div>
+            ${isFlipped ? "bg-primary" : "bg-muted-foreground/30"}
+          `}
+          ></div>
         </div>
       </div>
     </Card>
@@ -199,19 +213,18 @@ export const CharacterComponent = () => {
   const params = useParams();
   const id = params.id as string;
   const initialLimit = 6;
-  const maxLimit = 24;  // Reduced from 50 for better performance
+  const maxLimit = 24; // Reduced from 50 for better performance
   const [showAll, setShowAll] = useState(false);
 
   // Query for character data
   const { data, isLoading, error } = useQuery({
-    queryKey: ['characters', id],
+    queryKey: ["characters", id],
     queryFn: async () => {
       const res = await GetCharacterInfo({
         id: id,
       });
       return res.data as CharactersProps[];
     },
-    networkMode: 'always',
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
@@ -268,7 +281,9 @@ export const CharacterComponent = () => {
   // Process data for display
   const processedData = data?.slice(0, maxLimit);
   const hasMore = processedData.length > initialLimit;
-  const visibleData = showAll ? processedData : processedData.slice(0, initialLimit);
+  const visibleData = showAll
+    ? processedData
+    : processedData.slice(0, initialLimit);
 
   return (
     <div className="space-y-4">
@@ -279,7 +294,7 @@ export const CharacterComponent = () => {
             Characters & VA
           </h2>
         </div>
-        
+
         {hasMore && (
           <Button
             onClick={() => setShowAll(!showAll)}
@@ -292,20 +307,22 @@ export const CharacterComponent = () => {
             ) : (
               <ChevronDown className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
             )}
-            {showAll ? 'Show Less' : 'Show More'}
+            {showAll ? "Show Less" : "Show More"}
           </Button>
         )}
       </div>
 
       {/* Grid with a responsive layout that adapts to screen size */}
       <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
-        {visibleData.map((character: CharactersProps) => (
+        {visibleData.map((character: CharactersProps, index: number) => (
           <CharacterCard
-            key={character.character.mal_id}
+            key={`${character.character.mal_id}-${index}`}
             CharacterImage={character.character.images.jpg.image_url}
             characterName={character.character.name}
             role={character.role}
-            voiceActorImage={character.voice_actors[0]?.person.images.jpg.image_url}
+            voiceActorImage={
+              character.voice_actors[0]?.person.images.jpg.image_url
+            }
             voiceActor={character.voice_actors[0]?.person.name}
             language={character.voice_actors[0]?.person.language}
           />
