@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="relative  w-full overflow-hidden rounded-3xl border border-border/40">
+    <section className="hidden lg:flex relative  w-full overflow-hidden rounded-3xl border border-border/40">
       <div className="absolute inset-0 bg-[url(/images/9c8b3044-heroimages-swimlanes-04faves-cotn.jpg)] bg-cover" />
       <Wrapper>
         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-transparent" />
