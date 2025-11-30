@@ -22,7 +22,7 @@ export default function Carousel({ data, title = "Trending" }: CarouselProps) {
   const getItemsPerView = useCallback(() => {
     if (typeof window !== "undefined") {
       if (window.innerWidth < 640) {
-        return 2;
+        return 3;
       } else if (window.innerWidth < 768) {
         return 3;
       } else if (window.innerWidth < 1024) {

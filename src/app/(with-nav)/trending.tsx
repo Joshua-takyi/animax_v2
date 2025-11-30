@@ -26,7 +26,9 @@ export default function Trending() {
 
   const uniqueData =
     data && Array.isArray(data)
-      ? Array.from(new Map(data.map((item) => [item.mal_id, item])).values())
+      ? Array.from(
+          new Map(data.map((item) => [item.mal_id, item])).values()
+        ).filter((item) => item.status !== "Not yet aired")
       : [];
 
   if (!isLoading && !isError && uniqueData.length === 0) {

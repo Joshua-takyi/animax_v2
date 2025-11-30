@@ -33,7 +33,7 @@ const AnimeCard = memo(function AnimeCard({
     >
       <div className="space-y-2">
         {/* Image */}
-        <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-muted">
+        <div className="relative aspect-[3/3] overflow-hidden rounded-xl bg-muted">
           <Image
             src={images}
             alt={displayTitle}
@@ -59,7 +59,7 @@ const AnimeCard = memo(function AnimeCard({
         </div>
 
         {/* Title - clean and simple */}
-        <h3 className="text-sm font-medium line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+        <h3 className="text-[0.8rem] font-medium line-clamp-2 leading-snug group-hover:text-primary transition-colors">
           {displayTitle}
         </h3>
       </div>
