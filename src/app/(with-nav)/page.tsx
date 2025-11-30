@@ -159,12 +159,10 @@ export default async function Home() {
             <Upcoming />
           </section>
           <LatestReleases />
-          <div className="flex gap-8">
-            <div className="flex-1 space-y-12">
-              <PostGridComponent title="movies" type="movie" />
-              <PostGridComponent title="Tv series" type="tv" />
-              <PostGridComponent title="special" type="special" />
-            </div>
+          <div className="space-y-12">
+            <PostGridComponent title="movies" type="movie" />
+            <PostGridComponent title="Tv series" type="tv" />
+            <PostGridComponent title="special" type="special" />
           </div>
         </Wrapper>
       </div>

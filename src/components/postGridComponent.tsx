@@ -85,9 +85,7 @@ const PostGridComponent = ({
     );
   }
 
-  const product = data
-    ? data.filter((item) => item.status !== "Not yet aired")
-    : [];
+  const product = data || [];
 
   if (product.length === 0) {
     return null;
@@ -108,7 +106,7 @@ const PostGridComponent = ({
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {product.map((anime) => (
           <AnimeCard
             key={anime.mal_id}
